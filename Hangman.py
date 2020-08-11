@@ -26,6 +26,7 @@ for i in range(7):
 
 # font
 LETTER_FONT = pygame.font.SysFont('comicsans', 40)
+WORD_FONT = pygame.font.SysFont('comicsans', 60)
 
 
 # button variables, values are in pixels
@@ -43,12 +44,22 @@ for i in range(26):
 
 # game variables
 current_png = 0
+word = "DEVELOPPER"
+guessed = []
+
 
 # methods
-
-
 def draw():
-    disp.fill(PINK)
+    disp.fill(WHITE)
+    # draw word
+    display_word = ""
+    for letter in word:
+        if letter in guessed:
+            display_word += letter + " "
+        else:
+            display_word += "_ "
+    text = WORD_FONT.render(display_word, 1, BLACK)
+    disp.blit(text, (400, 200))
     # draw buttons
     for letter in letter_buttons:
         x, y, current_letter, visible = letter
@@ -78,5 +89,21 @@ while isRunning:
                     distance = math.sqrt((x - mouse_x)**2 + (y - mouse_y)**2)
                     if distance < RADIUS:
                         letter[3] = False
+                        guessed.append(current_letter)
+                        if current_letter not in word:
+                            current_png += 1
+
+    won = True
+    for letter in word:
+        if letter not in guessed:
+            won = False
+            break
+    if won:
+        print("you win")
+        break
+
+    if current_png == 6:
+        print("you lose")
+        break
 
 pygame.quit()
